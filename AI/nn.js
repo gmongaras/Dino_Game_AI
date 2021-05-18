@@ -40,11 +40,13 @@ class NeuralNetwork {
 		this.i = inputs;
 		
 		
-		// Set the weights ----------------------------------------------------------------
+		// Set the weights and biases ----------------------------------------------------------------
 		this.weights = [];
+		this.biases = [];
 		// For every layer in the network
 		for (let i = 0; i < this.l; i++) {
 			let newWeights = []; // new weights for that layer
+			let newBiases = []; // new biases for that layer
 			
 			
 			// For every node in the layer
@@ -68,10 +70,19 @@ class NeuralNetwork {
 				
 				// Push the new weights to the newWeights array
 				newWeights.push(nodeWeights);
+				
+				
+				
+				// Push a new bias to the newBiases array.
+				newBiases.push(0);
 			}
 			
 			
 			this.weights.push(newWeights); // Add the weights for that layer
+			
+			// Add a new bias to the biases array
+			this.biases.push(newBiases);
+			//this.biases.push(((Math.random() * (1 + 1) - 1).toFixed(20)));
 		}
 	}
 	
@@ -121,6 +132,9 @@ class NeuralNetwork {
 					// Pass nodeOutputs to the sigmoid function
 					nodeOutputs = sigmoid(nodeOutputs);
 					
+					// Add the bias to the total (the b in y = mx + b)
+					nodeOutputs += this.biases[i][j];
+					
 					// Add nodeOutputs to the newInputs
 					newOutputs[j] = nodeOutputs;
 				}
@@ -140,13 +154,21 @@ class NeuralNetwork {
 		return this.weights;
 	}
 	
+	// Returns the biases
+	getBiases() {
+		return this.biases;
+	}
+	
 	// Sets the weights given a set of weights
 	setWeights(w) {
 		let newWeights = [];
+		// For every layer
 		for (let i = 0; i < w.length; i++) {
 			let newi = [];
+			// For evrery node
 			for (let j = 0; j < w[i].length; j++) {
 				let newj = [];
+				// Fore very weight connected to the node
 				for (let z = 0; z < w[i][j].length; z++) {
 					newj.push(w[i][j][z]);
 				}
@@ -156,5 +178,22 @@ class NeuralNetwork {
 		}
 		
 		this.weights = newWeights;
+	}
+	
+	// Sets the biases given a set of biases
+	setBiases(b) {
+		let newBiases = [];
+		// For every layer
+		for (let i = 0; i < b.length; i++) {
+			let newi = [];
+			// For every bias that corresponds to each node
+			for (let j = 0; j < b[i].length; j++) {
+				newi.push(b[i][j]);
+			}
+			newBiases.push(newi);
+		}
+		
+
+		this.biases = newBiases;
 	}
 }

@@ -1,45 +1,10 @@
-// Creates a new brain for the dino
-function createBrain() {
-	let brain;
-	// Create a new NeuralNetwork with 3 layers (hidden, hidden, and output) with sizes
-	// 8 (random value), 8 (random value) and 3 (jump, duck, or nothing). There will also be 8 inputs.
-	
-	// NOTE: The input layer is not an acutal layer.
-	// Inputs:
-	// 1: Speed of dino
-	// 2: Dino y position
-	// 3: x position of nearest obstacle
-	// 4: y position of nearest obstacle
-	// 5: width of nearest cacti if it's a cacti
-	// 6: x position of second nearest obstacle
-	// 7: y position of second nearest obstacle
-	// 8: width of second nearest cacti it it's a cacti
-	
-	brain = new NeuralNetwork(3, [32, 32, 3], 10);
-	
-	return brain;
-}
-
-
-
-
-
-function newDino() {
+(function() {
     var k = 0;
     function g(A, z) {
-        //if (g.instance_) {
-        //    return g.instance_
-        //}
-		
-		this.g = g;
-		
-		this.input_nodes = 6;
-		this.hiden_nodes = 8;
-		this.output_nodees = 1;
-		this.brain = createBrain(); // Brain of the dino
-		
-		
-		g.instance_ = this;
+        if (g.instance_) {
+            return g.instance_
+        }
+        g.instance_ = this;
         this.outerContainerEl = document.querySelector(A);
         this.containerEl = null;
         this.snackbarEl = null;
@@ -69,13 +34,7 @@ function newDino() {
         this.imagesLoaded = 0;
         this.loadImages();
         this.gamepadPreviousKeyDown = false
-		
-		this.crash = false;
-		this.cacti = [];
-		this.fitness = 0;
     }
-	
-	
     window.Runner = g;
     var e = 600;
     var d = 60;
@@ -403,8 +362,6 @@ function newDino() {
                     this.horizon.update(A, this.currentSpeed, z)
                 }
                 var D = z && u(this.horizon.obstacles[0], this.tRex);
-				// && this.tRex.spritePos["y"] <= this.dimensions["HEIGHT"
-				// && this.tRex.spritePos["y"] <= this.dimensions["HEIGHT"
                 if (!D) {
                     this.distanceRan += this.currentSpeed * A / this.msPerFrame;
                     if (this.currentSpeed < this.config.MAX_SPEED) {
@@ -426,7 +383,7 @@ function newDino() {
         handleEvent: function(z) {
             return (function(B, A) {
                 switch (B) {
-                case A.KEYDOWN: 
+                case A.KEYDOWN:
                 case A.TOUCHSTART:
                 case A.MOUSEDOWN:
                 case A.GAMEPADCONNECTED:
@@ -496,7 +453,7 @@ function newDino() {
                 z.preventDefault()
             }
             if (!this.crashed && (g.keycodes.JUMP[z.keyCode] || z.type == g.events.TOUCHSTART || z.type == g.events.GAMEPADCONNECTED)) {
-				if (!this.activated) {
+                if (!this.activated) {
                     this.loadSounds();
                     this.activated = true
                 }
@@ -562,19 +519,15 @@ function newDino() {
                 this.playSound(this.soundFx.HIT)
             }
             b(200);
-            
-			
-			// Kill the dino and check if all the dinos are dead
-			killDino(this);
-			check();
-			//this.crash = true;
-            //this.distanceMeter.acheivement = false;
-            //this.tRex.update(100, i.status.CRASHED);
-            //if (!this.gameOverPanel) {
-                //this.gameOverPanel = new s(this.canvas,this.spriteDef.TEXT_SPRITE,this.spriteDef.RESTART,this.dimensions)
-            //} else {
-                //this.gameOverPanel.draw()
-            //}
+            this.stop();
+            this.crashed = true;
+            this.distanceMeter.acheivement = false;
+            this.tRex.update(100, i.status.CRASHED);
+            if (!this.gameOverPanel) {
+                this.gameOverPanel = new s(this.canvas,this.spriteDef.TEXT_SPRITE,this.spriteDef.RESTART,this.dimensions)
+            } else {
+                this.gameOverPanel.draw()
+            }
             if (this.distanceRan > this.highestScore) {
                 this.highestScore = Math.ceil(this.distanceRan);
                 this.distanceMeter.setHighScore(this.highestScore);
@@ -617,7 +570,7 @@ function newDino() {
                         }
                     }
                     ;
-                    //B.send()
+                    B.send()
                 }
             }
             this.adjustDimensions(true);
@@ -891,7 +844,7 @@ function newDino() {
                 B += z * this.currentFrame
             }
             this.canvasCtx.drawImage(g.imageSprite, B, this.spritePos.y, z * this.size, A, this.xPos, this.yPos, this.typeConfig.width * this.size, this.typeConfig.height)
-		},
+        },
         update: function(z, A) {
             if (!this.remove) {
                 if (this.typeConfig.speedOffset) {
@@ -1131,8 +1084,7 @@ function newDino() {
                 this.yPos += Math.round(this.jumpVelocity * z)
             }
             this.jumpVelocity += this.config.GRAVITY * z;
-			// if (this.yPos < this.minJumpHeight || this.speedDrop) {
-            if (this.yPos < this.minJumpHeight/2 || this.speedDrop) {
+            if (this.yPos < this.minJumpHeight || this.speedDrop) {
                 this.reachedMinHeight = true
             }
             if (this.yPos < this.config.MAX_JUMP_HEIGHT || this.speedDrop) {
@@ -1397,26 +1349,9 @@ function newDino() {
             return Math.random() > this.bumpThreshold ? this.dimensions.WIDTH : 0
         },
         draw: function() {
-			
-			
-			
-			// Calls the function to check if all dinos are dead passing the dino
-			// to the function
-			if (dinos.length == POPULATION) {
-				for (let dd = 0; dd < POPULATION; dd++)
-				{
-					if (this.canvasCtx == dinos[dd].canvasCtx) {
-						think(dinos[dd]);
-						break;
-					}
-				}
-			}
-			
-			
-			
             this.canvasCtx.drawImage(g.imageSprite, this.sourceXPos[0], this.spritePos.y, this.sourceDimensions.WIDTH, this.sourceDimensions.HEIGHT, this.xPos[0], this.yPos, this.dimensions.WIDTH, this.dimensions.HEIGHT);
             this.canvasCtx.drawImage(g.imageSprite, this.sourceXPos[1], this.spritePos.y, this.sourceDimensions.WIDTH, this.sourceDimensions.HEIGHT, this.xPos[1], this.yPos, this.dimensions.WIDTH, this.dimensions.HEIGHT)
-		},
+        },
         updateXPos: function(C, A) {
             var B = C;
             var z = C == 0 ? 1 : 0;
@@ -1547,301 +1482,6 @@ function newDino() {
             this.clouds.push(new m(this.canvas,this.spritePos.CLOUD,this.dimensions.WIDTH))
         }
     }
-	
-	
-	
-	
-	// Return a new runner
-	return new Runner(".interstitial-wrapper");
 }
-//-------------------------------------------------------------------------
-
-
-
-let dinos = [];
-let dinoScore = [];
-let POPULATION = 500;
-
-
-
-
-// kills the dino
-function killDino(dino) {
-	// Get the index of the dino in the dinos array
-	dinoIndex = dinos.indexOf(dino);
-	// Add the score of the dino to the dinoScore array.
-	dinoScore[dinoIndex] = dino.distanceRan;
-	dino.crash = true; // Change crash to true so the dino is crashed
-	dinos[dinoIndex].stop();
-    dinos[dinoIndex].crashed = true;
-	
-	
-	// Get the best dino and scroll into view of it
-	bestScore = 0;
-	bestDino = 0;
-	for (let i = 0; i < POPULATION; i++) {
-		if (dinos[i].distanceRan > bestScore && dinos[i] != dino) {
-			bestScore = dinos[i].distanceRan;
-			bestDino = dinos[i];
-		}
-	}
-	
-	bestDino.canvas.scrollIntoView();
-}
-
-
-
-
-
-
-
-// Create POPULATION dinos
-if (dinos.length == 0) {
-	for (let c = 0; c < POPULATION; c++) {
-		dinos.push(newDino());
-		dinoScore.push(0);
-	}
-}
-
-
-// Sleep function
-function sleep(delay) {
-	var start = new Date().getTime();
-	while (new Date().getTime() < start + delay);
-}
-
-
-
-function think(dino) {
-	// If teh dino is not dead
-	if (dino.crash == false) {
-		// Get each of the inputs into the neaural network
-		// Inputs:
-		// 1: Speed of dino
-		// 2: Dino y position
-		// 3: x position of nearest obstacle
-		// 4: y position of nearest obstacle if it's a pterodactyl
-		// 5: width of nearest cacti if it's a cacti
-		// 6: x position of second nearest obstacle
-		// 7: y position of second nearest obstacle if it's a pterodactyl
-		// 8: width of second nearest cacti it it's a cacti
-		// 9: input is 1 if closet obstacle is a cacti, -1 if it's a pterodactyl, 0 if none
-		// 10: input is 1 if second closet obstacle is a cacti, -1 if it's a pterodactyl, 0 if none
-		
-		
-		let input1 = dino.currentSpeed;
-		let input2 = dino.tRex.yPos;
-		
-		// Catch an error if there is no first cacti
-		let input3 = 0;
-		let input4 = 0;
-		let input5 = 0;
-		let input9 = 0;
-		try {
-			// Get the obstacle's x and y position
-			input3 = dino.horizon.obstacles[0].xPos;
-			
-			// If the obstacle is a pterodactyl
-			if (dino.horizon.obstacles[0].typeConfig.type == "PTERODACTYL") {
-				input4 = dino.horizon.obstacles[0].yPos;
-				input9 = -1;
-			}
-			// If the object is a cactus
-			else {
-				input5 = dino.horizon.obstacles[0].width;
-				input9 = 1;
-			}
-		}
-		catch {}
-		
-		
-		let input6 = 0;
-		let input7 = 0;
-		let input8 = 0;
-		let input10 = 0;
-		try {
-			// Get the obstacle x and y position 
-			input6 = dino.horizon.obstacles[1].xPos;
-			
-			// If the obstacle is a pterodactyl
-			if (dino.horizon.obstacles[1].typeConfig.type == "PTERODACTYL") {
-				input7 = dino.horizon.obstacles[1].yPos;
-				input10 = -1;
-			}
-			// If the obsacle is a cactus
-			else {
-				input8 = dino.horizon.obstacles[1].width;
-				input10 = 1;
-			}
-		}
-		catch {}
-		
-		
-		
-		
-		/*
-		// Plan 2:
-		// 1: Speed of dino
-		// 2: Dino y position
-		// 3: x position of nearest cacti
-		// 4: width of nearest cacti
-		// 5: x position of second nearest cacti
-		// 6: width of second nearest cacti
-		// 7: x pos of closest pterodactyl
-		// 8: y pos of closest pterodactyl
-		// 9: x pos of second closest pterodactyl
-		// 10: y pos of second closest pterodactyl
-		
-		
-		let input1 = dino.currentSpeed;
-		let input2 = dino.tRex.yPos;
-		
-		// Catch an error if there is no first cacti
-		let input3 = 0;
-		let input4 = 0;
-		let input7 = 0;
-		let input8 = 0;
-		try {
-			// If the obstacle is a pterodactyl
-			if (dino.horizon.obstacles[0].typeConfig.type == "PTERODACTYL") {
-				input7 = dino.horizon.obstacles[0].xPos;
-				input8 = dino.horizon.obstacles[0].yPos;
-			}
-			// If the object is a cactus
-			else {
-				input3 = dino.horizon.obstacles[0].xPos;
-				input4 = dino.horizon.obstacles[0].width;
-			}
-		}
-		catch {}
-		
-		
-		let input5 = 0;
-		let input6 = 0;
-		let input9 = 0;
-		let input10 = 0;
-		try {
-			// Get the obstacle x and y position 
-			input6 = dino.horizon.obstacles[1].xPos;
-			
-			// If the obstacle is a pterodactyl
-			if (dino.horizon.obstacles[1].typeConfig.type == "PTERODACTYL") {
-				input9 = dino.horizon.obstacles[1].xPos;
-				input10 = dino.horizon.obstacles[1].yPos;
-			}
-			// If the obsacle is a cactus
-			else {
-				input5 = dino.horizon.obstacles[1].xPos;
-				input6 = dino.horizon.obstacles[1].width;
-			}
-		}
-		catch {}
-		*/
-		
-		
-		// Get the predictions from the current dino's brain
-		//pred1 = dinos[c].brain.predict(tf.tensor([[input1,input2,input3,input4,input5,input6]])).arraySync()[0][0];
-		//pred2 = dinos[c].brain.predict(tf.tensor([[input1,input2,input3,input4,input5,input6]])).arraySync()[0][1];
-		// preds = dino.brain.predict([input1,input2,input3,input4,input5,input6,input7,input8]);
-		preds = dino.brain.predict([input1,input2,input3,input4,input5,input6,input7,input8,input9,input10]);
-		pred1 = preds[0]; // If the dino should jump
-		pred2 = preds[1]; // If the dino should duck
-		pred3 = preds[2]; // If the dino should do nothing
-		
-		
-		// Get the max between the three values
-		maxPred = Math.max(pred1, pred2, pred3);
-		
-		// If the first prediction is the greatest, jump
-		if (maxPred == pred1) {
-			dino.handleEvent(new KeyboardEvent('keyup', {'keyCode':'38'}));
-			dino.handleEvent(new KeyboardEvent('keydown', {'keyCode':'38'}));
-		}
-		// If the second predicition is the greatest, duck
-		else if (maxPred == pred2) {
-			dino.handleEvent(new KeyboardEvent('keyup', {'keyCode':'40'}));
-			dino.handleEvent(new KeyboardEvent('keydown', {'keyCode':'40'}));
-		}
-		// If the third prediction is the greatest, do nothing
-
-
-		/*
-		// If the first prediction is greater than 0.5, big jump
-		if (pred1 > 0.5) {
-			dino.handleEvent(new KeyboardEvent('keyup', {'keyCode':'38'}));
-			dino.handleEvent(new KeyboardEvent('keydown', {'keyCode':'38'}));
-		}
-		// If the second prediction is greater than 0.5, duck
-		if (pred2 > 0.5) {
-			dino.handleEvent(new KeyboardEvent('keyup', {'keyCode':'40'}));
-			dino.handleEvent(new KeyboardEvent('keydown', {'keyCode':'40'}));
-		}
-		*/
-	}
-}
-
-
-
-// Checks if all dinos are dead
-function check() {
-	// Test if all dinos are dead. It makes an exception if one
-	// is not dead as sometimes, one dino will be stuck doing nothing
-	let dead = true;
-	let d = 0;
-	for (let c = 0; c < POPULATION; c++) {
-		// If one dino is not dead, then they are not all dead
-		if (dinos[c].crash == false && d == 0) {
-			d = 1;
-		}
-		else if (dinos[c].crash == false && d != 0) {
-			dead = false;
-			break;
-		}
-	}
-	
-	/*
-	let dead = true;
-	for (let c = 0; c < POPULATION; c++) {
-		// If one dino is not dead, then they are not all dead
-		if (dinos[c].crash == false) {
-			dead = false;
-			break;
-		}
-	}*/
-	
-	// If all dinos are dead, restart the game.
-	if (dead == true) {
-		// Stop all the dinos
-		for (let c = 0; c < POPULATION; c++) {
-			dinos[c].stop();
-            dinos[c].crashed = true;
-            dinos[c].distanceMeter.acheivement = false;
-			/*
-            a[c].tRex.update(100, a[c].i.status.CRASHED);
-            if (!a[c].gameOverPanel) {
-                a[c].gameOverPanel = new s(a[c].canvas,a[c].spriteDef.TEXT_SPRITE,a[c].spriteDef.RESTART,a[c].dimensions)
-            } else {
-                a[c].gameOverPanel.draw()
-            }
-			*/
-			dinos[c].crash = false;
-		}
-		
-		
-		// Get the next generation
-		nextGeneration();
-		
-		
-		
-		sleep(3000);
-		
-		// Simulate keypress to jump for each dino to restart the game
-		for (let c = 0; c < POPULATION; c++) {
-			//dinos[c].handleEvent(new KeyboardEvent('keyup', {'keyCode':'38'}));
-			//dinos[c].handleEvent(new KeyboardEvent('keydown', {'keyCode':'38'}));
-			dinos[c].restart();
-		}
-		
-		dead = false;
-	}
-}
+)();
+new Runner(".interstitial-wrapper");

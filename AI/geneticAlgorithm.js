@@ -2,7 +2,9 @@
 function copy(b) {
 	const modelCopy = createBrain();
 	const weights = b.getWeights();
+	const biases = b.getBiases();
 	modelCopy.setWeights(weights);
+	modelCopy.setBiases(biases);
 	return modelCopy;
 }
 
@@ -26,6 +28,7 @@ function mutateWeights(b) {
 	//const mutatedWeights = [];
 	
 	const rate = 0.1;
+	const changeAmount = 1; // The range which the weights can be changed
 	
 	let newWeights = [];
 	// For every layer
@@ -40,7 +43,7 @@ function mutateWeights(b) {
 				
 				// With a probability of rate, change the weight slightly
 				if (Math.random(1) < rate) {
-					newz += parseFloat((Math.random() * (1 + 1) - 1).toFixed(20)); //newz + randomGaussian();
+					newz += parseFloat((Math.random() * changeAmount) * (Math.round(Math.random()) ? 1 : -1)); //newz + randomGaussian();
 				}
 				newj.push(newz);
 			}
@@ -52,6 +55,38 @@ function mutateWeights(b) {
 	return newWeights;
 }
 
+// Mutates a neural network's biases given a dino
+function mutateBiases(b) {
+	const biases = b.getBiases();
+	newBiases = []; // Holds the new biases
+	
+	const rate = 0.05; // The rate at which the biases are changed
+	const changeAmount = 0.1 // The range which the biases can be changed
+	
+	// For every layer
+	for (let i = 0; i < biases.length; i++) {
+		let newi = []; // New biases for this layer
+		
+		// For every bias that corresponds to each node in the layer.
+		for (let j = 0; j < biases[i].length; j++) {
+			newi.push(biases[i][j]); // Push teh bias to the new biases for this layer
+			
+			// With a probability of rate, change the bias slightly and add it to the weight
+			if (Math.random(1) < rate) {
+				// The 0.5 means between -0.5 and 0.5
+				newi[j] += (Math.random() * changeAmount ) * (Math.round(Math.random()) ? 1 : -1)
+				
+				
+				//newi[i] = biases[i][j] + parseFloat((Math.random() * (1 + 1) - 1).toFixed(20)); //newz + randomGaussian();
+			}
+		}
+		
+		newBiases.push(newi); // Add the layer biases to the new biases array
+	}
+	
+	return newBiases;
+}
+
 
 function nextGeneration() {
 	// Calculate the fitness for each dino and normalize the fitness values
@@ -59,9 +94,24 @@ function nextGeneration() {
 	console.log('next generation');
 	calculateFitness();
 	
-	
-	
 	// Create a new population of dinos -------------------
+	
+	
+	// Get the dino with the highest fitness
+	let bestFitness = 0;
+	let bestBrain;
+	
+	for (let i = 0; i < POPULATION; i++) {
+		if (dinos[i].fitness > bestFitness) {
+			bestFitness = dinos[i].fitness;
+			bestBrain = dinos[i].brain;
+		}
+	}
+	
+	// Copy the dino with the highest fitness to the array without mutating it
+	dinos[0].brain = copy(bestBrain);
+	
+	// Copy and mutate the rest of the dinos
 	for (let i = 1; i < POPULATION; i++) {
 		// Pick a dino based on the probabiloty mapped to it's fitness
 		dinos[i].brain = pickOne();
@@ -134,12 +184,29 @@ function pickOne() {
 	// Copy, mutate, and return the brain of the chosen dino
 	let newBrain = copy(bestDino.brain);
 	newBrain.setWeights(mutateWeights(newBrain));
+	newBrain.setBiases(mutateBiases(newBrain));
 	return newBrain;
 }
 
 
 // Calculate the fitness for each dino and normalize the fitness values
 function calculateFitness() {
+	// Get the highest distance ran
+	let bestDistanceRan = 0;
+	let bestDino;
+	
+	for (let i = 0; i < POPULATION; i++) {
+		if (dinos[i].distanceRan > bestDistanceRan) {
+			bestDistanceRan = dinos[i].distanceRan;
+			bestDino = dinos[i];
+		}
+	}
+	
+	// Multiply the furthest distance by rate so that it has a higher chance of being chosen
+	const rate = 1.2;
+	bestDino.distanceRan *= rate;
+	
+	
 	// Get the sum of all dino scores
 	let s = 0;
 	for (let d of dinos) {
