@@ -1,21 +1,24 @@
 // Creates a new brain for the dino
 function createBrain() {
 	let brain;
-	// Create a new NeuralNetwork with 3 layers (hidden, hidden, and output) with sizes
-	// 8 (random value), 8 (random value) and 3 (jump, duck, or nothing). There will also be 8 inputs.
+	// Create a new NeuralNetwork with 3 layers (hidden, hidden, hidden, hidden, and output) with sizes
+	// of 32 for each hidden layer (random value) and an output layer of 3 (jump, duck, or nothing). 
+	// There will also be 10 inputs.
 	
 	// NOTE: The input layer is not an acutal layer.
 	// Inputs:
 	// 1: Speed of dino
 	// 2: Dino y position
 	// 3: x position of nearest obstacle
-	// 4: y position of nearest obstacle
+	// 4: y position of nearest obstacle if it's a pterodactyl
 	// 5: width of nearest cacti if it's a cacti
 	// 6: x position of second nearest obstacle
-	// 7: y position of second nearest obstacle
+	// 7: y position of second nearest obstacle if it's a pterodactyl
 	// 8: width of second nearest cacti it it's a cacti
+	// 9: input is 1 if closet obstacle is a cacti, -1 if it's a pterodactyl, 0 if none
+	// 10: input is 1 if second closet obstacle is a cacti, -1 if it's a pterodactyl, 0 if none
 	
-	brain = new NeuralNetwork(3, [32, 32, 3], 10);
+	brain = new NeuralNetwork(4, [16, 16, 16, 3], 10);
 	
 	return brain;
 }
@@ -1752,15 +1755,18 @@ function think(dino) {
 		// Get the max between the three values
 		maxPred = Math.max(pred1, pred2, pred3);
 		
+		dino.handleEvent(new KeyboardEvent('keyup', {'keyCode':'38'}));
+		dino.handleEvent(new KeyboardEvent('keyup', {'keyCode':'40'}));
+		
 		// If the first prediction is the greatest, jump
 		if (maxPred == pred1) {
-			dino.handleEvent(new KeyboardEvent('keyup', {'keyCode':'38'}));
 			dino.handleEvent(new KeyboardEvent('keydown', {'keyCode':'38'}));
+			//dino.handleEvent(new KeyboardEvent('keyup', {'keyCode':'38'}));
 		}
 		// If the second predicition is the greatest, duck
 		else if (maxPred == pred2) {
-			dino.handleEvent(new KeyboardEvent('keyup', {'keyCode':'40'}));
 			dino.handleEvent(new KeyboardEvent('keydown', {'keyCode':'40'}));
+			//dino.handleEvent(new KeyboardEvent('keyup', {'keyCode':'40'}));
 		}
 		// If the third prediction is the greatest, do nothing
 

@@ -26,6 +26,37 @@ function sigmoid(t) {
 }
 
 
+// Calculates the softax given an array of values
+// Link to softmax function: https://deepai.org/machine-learning-glossary-and-terms/softmax-layer
+function softmax(inputs) {
+	// Calculate the top half of the funciton.
+	expVals = []; // The exponential values for each item
+	
+	for (let i = 0; i < inputs.length; i++) {
+		expVals.push(Math.pow(Math.E, inputs[i]));
+	}
+	
+	
+	// Calculate the bottom half of the function
+	summation = 0; // The summation of all exponential values
+	
+	for (let i = 0; i < inputs.length; i++) {
+		summation += expVals[i];
+	}
+	
+	
+	// Calculate the final value for each input. Each input is it's exponential
+	// value divided by the summation
+	outputs = []; // The final value of each input
+	
+	for (let i = 0; i < inputs.length; i++) {
+		outputs.push(expVals[i]/summation);
+	}
+	
+	return outputs;
+}
+
+
 
 
 class NeuralNetwork {
@@ -86,6 +117,7 @@ class NeuralNetwork {
 		}
 	}
 	
+	
 	// Given an array of this.i (inputs) large, predict the output
 	predict(inputs) {
 		// Test if the array is large enough
@@ -129,8 +161,10 @@ class NeuralNetwork {
 					// Find the sum of the new inputs
 					nodeOutputs = add(nodeOutputs);
 					
-					// Pass nodeOutputs to the sigmoid function
-					nodeOutputs = sigmoid(nodeOutputs);
+					// Pass nodeOutputs to the sigmoid function if it's not the last layer
+					if (i+1 != inputs.length) {
+						nodeOutputs = sigmoid(nodeOutputs);
+					}
 					
 					// Add the bias to the total (the b in y = mx + b)
 					nodeOutputs += this.biases[i][j];
@@ -141,7 +175,7 @@ class NeuralNetwork {
 			}
 			
 			// When all the weights are calculated in newInputs, return them
-			return newOutputs;
+			return softmax(newOutputs);
 		}
 		
 		// If array isn't large enough, return -100
@@ -149,15 +183,18 @@ class NeuralNetwork {
 		return -100;
 	}
 	
+	
 	// Returns the weights
 	getWeights() {
 		return this.weights;
 	}
 	
+	
 	// Returns the biases
 	getBiases() {
 		return this.biases;
 	}
+	
 	
 	// Sets the weights given a set of weights
 	setWeights(w) {
@@ -179,6 +216,7 @@ class NeuralNetwork {
 		
 		this.weights = newWeights;
 	}
+	
 	
 	// Sets the biases given a set of biases
 	setBiases(b) {

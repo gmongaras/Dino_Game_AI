@@ -27,7 +27,7 @@ function mutateWeights(b) {
 	const weights = b.getWeights();
 	//const mutatedWeights = [];
 	
-	const rate = 0.1;
+	const rate = 0.13;
 	const changeAmount = 1; // The range which the weights can be changed
 	
 	let newWeights = [];
@@ -60,8 +60,8 @@ function mutateBiases(b) {
 	const biases = b.getBiases();
 	newBiases = []; // Holds the new biases
 	
-	const rate = 0.05; // The rate at which the biases are changed
-	const changeAmount = 0.1 // The range which the biases can be changed
+	const rate = 0.01; // The rate at which the biases are changed
+	const changeAmount = 0.5 // The range which the biases can be changed
 	
 	// For every layer
 	for (let i = 0; i < biases.length; i++) {
@@ -203,7 +203,7 @@ function calculateFitness() {
 	}
 	
 	// Multiply the furthest distance by rate so that it has a higher chance of being chosen
-	const rate = 1.2;
+	const rate = 1;
 	bestDino.distanceRan *= rate;
 	
 	
