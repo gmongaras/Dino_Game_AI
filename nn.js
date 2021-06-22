@@ -20,6 +20,7 @@ function add(arr) {
 }
 
 
+
 // Puts a t value through the sigmoid function and returns the value
 function sigmoid(t) {
     return 1/(1+Math.pow(Math.E, -t));
@@ -29,7 +30,7 @@ function sigmoid(t) {
 
 // Returns the output when x is sent through the ReLU function
 function ReLU(x) {
-	if (x >= 0.5) {
+	if (x >= 0) {
 		return x;
 	}
 	else {
