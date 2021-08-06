@@ -1,4 +1,8 @@
 # Dino_Game_AI
+
+NOTE: This project has been moved to Dino_Game_AI_V2 which can be found at the following link:
+https://github.com/gmongaras/Dino_Game_AI_V2
+
 AI that learns to play the Google dino game
 
 
